@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ytianxia6.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Edit [转]git clone 克隆所有分支原文： https:&#x2F;&#x2F;gist.github.com&#x2F;octasimo&#x2F;66f3cc230725d1cf1421 123456789101112131415*1.***#!&#x2F;bin&#x2F;bash***2.******3.**#Whenever you clone a repo, you do not clone all of its branches">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[转]git clone 克隆所有分支">
+<meta property="og:url" content="http://ytianxia6.github.io/2019/05/07/3298560e9be04fa390585d25c0034342/index.html">
+<meta property="og:site_name" content="Haroon的个人博客">
+<meta property="og:description" content="Edit [转]git clone 克隆所有分支原文： https:&#x2F;&#x2F;gist.github.com&#x2F;octasimo&#x2F;66f3cc230725d1cf1421 123456789101112131415*1.***#!&#x2F;bin&#x2F;bash***2.******3.**#Whenever you clone a repo, you do not clone all of its branches">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-07T18:07:24.000Z">
+<meta property="article:modified_time" content="2019-05-07T18:07:24.000Z">
+<meta property="article:author" content="yhl">
+<meta property="article:tag" content="随笔">
+<meta property="article:tag" content="git">
+<meta property="article:tag" content="转载">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://ytianxia6.github.io/2019/05/07/3298560e9be04fa390585d25c0034342/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>[转]git clone 克隆所有分支 | Haroon的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Haroon的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">没人管的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2019/05/07/3298560e9be04fa390585d25c0034342/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhl">
+      <meta itemprop="description" content="记录作者的一些历程，很杂乱，涉及很广...我也不知道我会什么">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Haroon的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [转]git clone 克隆所有分支
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-08 02:07:24" itemprop="dateCreated datePublished" datetime="2019-05-08T02:07:24+08:00">2019-05-08</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><s><a target="_blank" rel="noopener" href="http://maxiang.io/#/?provider=evernote&guid=95c18be7-87eb-448b-b06d-c6695416fa13&notebook=blog">Edit</a></s></p>
+<h1 id="转-git-clone-克隆所有分支"><a href="#转-git-clone-克隆所有分支" class="headerlink" title="[转]git clone 克隆所有分支"></a>[转]git clone 克隆所有分支</h1><p>原文： <a target="_blank" rel="noopener" href="https://gist.github.com/octasimo/66f3cc230725d1cf1421">https://gist.github.com/octasimo/66f3cc230725d1cf1421</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">*1.***#!/bin/bash**</span><br><span class="line"></span><br><span class="line">*2.*****</span><br><span class="line"></span><br><span class="line">*3.**#Whenever you clone a repo, you do not clone all of its branches by default.*</span><br><span class="line"></span><br><span class="line">*4.**#If you wish to do so, use the following script:*</span><br><span class="line"></span><br><span class="line">*5.*</span><br><span class="line"></span><br><span class="line">*6.***for** branch **in** `git branch -a | grep remotes | grep -v HEAD | grep -v master `; **do**</span><br><span class="line"></span><br><span class="line">*7.*   git branch --track $&#123;branch#remotes/origin/&#125; $branch</span><br><span class="line"></span><br><span class="line">*8.***done**</span><br></pre></td></tr></table></figure>
+
+<div style="display: none;">%23%20%5B%u8F6C%5Dgit%20clone%20%u514B%u9686%u6240%u6709%u5206%u652F%0A%0A@%28blog%29%5Bposts%2C%20%u968F%u7B14%2C%u8F6C%u8F7D%2Cgit%5D%0A%u539F%u6587%uFF1A%20https%3A//gist.github.com/octasimo/66f3cc230725d1cf1421%0A%0A%60%60%60bash%0A%23%21/bin/bash%0A%0A%23Whenever%20you%20clone%20a%20repo%2C%20you%20do%20not%20clone%20all%20of%20its%20branches%20by%20default.%0A%23If%20you%20wish%20to%20do%20so%2C%20use%20the%20following%20script%3A%0A%0Afor%20branch%20in%20%60git%20branch%20-a%20%7C%20grep%20remotes%20%7C%20grep%20-v%20HEAD%20%7C%20grep%20-v%20master%20%60%3B%20do%0A%20%20%20git%20branch%20--track%20%24%7Bbranch%23remotes/origin/%7D%20%24branch%0Adone%0A%60%60%60</div>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag"># 随笔</a>
+              <a href="/tags/git/" rel="tag"># git</a>
+              <a href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/07/f3434b8be4b846d3a311bf8945529823/" rel="prev" title="[过期][译]在使用多解决方案的项目中使用 Nuget Package Restore">
+      <i class="fa fa-chevron-left"></i> [过期][译]在使用多解决方案的项目中使用 Nuget Package Restore
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/07/dfd70d5168a245d09b572171d9c96564/" rel="next" title="[转]git拆分子目录作为新仓库并保留log记录">
+      [转]git拆分子目录作为新仓库并保留log记录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AC-git-clone-%E5%85%8B%E9%9A%86%E6%89%80%E6%9C%89%E5%88%86%E6%94%AF"><span class="nav-number">1.</span> <span class="nav-text">[转]git clone 克隆所有分支</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhl</p>
+  <div class="site-description" itemprop="description">记录作者的一些历程，很杂乱，涉及很广...我也不知道我会什么</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhl</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '90ad172ea65d425400d8',
+      clientSecret: 'b6b9739426a1c602e3b41e513344a8ba7429e597',
+      repo        : 'ytianxia6.github.io',
+      owner       : 'ytianxia6',
+      admin       : ['ytianxia6'],
+      id          : 'f9ec17d9648e1be7729fc7c19ad424e4',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

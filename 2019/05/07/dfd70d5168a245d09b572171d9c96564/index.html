@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ytianxia6.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="需求描述： 现有一个非常之庞大（大的过分）的 git 仓库，包含了 N 多个项目的源码，项目各个阶段的文档，原型等。对于新用户来说，clone 一次需要很长时间（网速也是槽点）。因此决定将原仓库拆分，将源码子目录作为一个新的仓库，并且需要保留和子目录相关的 log 记录。 一．前期准备所有的命令在 Git-shell 中进行   原仓库在本地的目录结构如下图：  1524103977(1).png">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[转]git拆分子目录作为新仓库并保留log记录">
+<meta property="og:url" content="http://ytianxia6.github.io/2019/05/07/dfd70d5168a245d09b572171d9c96564/index.html">
+<meta property="og:site_name" content="Haroon的个人博客">
+<meta property="og:description" content="需求描述： 现有一个非常之庞大（大的过分）的 git 仓库，包含了 N 多个项目的源码，项目各个阶段的文档，原型等。对于新用户来说，clone 一次需要很长时间（网速也是槽点）。因此决定将原仓库拆分，将源码子目录作为一个新的仓库，并且需要保留和子目录相关的 log 记录。 一．前期准备所有的命令在 Git-shell 中进行   原仓库在本地的目录结构如下图：  1524103977(1).png">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-07T18:08:19.000Z">
+<meta property="article:modified_time" content="2019-05-07T18:08:43.000Z">
+<meta property="article:author" content="yhl">
+<meta property="article:tag" content="git">
+<meta property="article:tag" content="转载">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://ytianxia6.github.io/2019/05/07/dfd70d5168a245d09b572171d9c96564/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>[转]git拆分子目录作为新仓库并保留log记录 | Haroon的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Haroon的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">没人管的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2019/05/07/dfd70d5168a245d09b572171d9c96564/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhl">
+      <meta itemprop="description" content="记录作者的一些历程，很杂乱，涉及很广...我也不知道我会什么">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Haroon的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [转]git拆分子目录作为新仓库并保留log记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-05-08 02:08:19 / 修改时间：02:08:43" itemprop="dateCreated datePublished" datetime="2019-05-08T02:08:19+08:00">2019-05-08</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>需求描述：</p>
+<p>现有一个非常之庞大（大的过分）的 git 仓库，包含了 N 多个项目的源码，项目各个阶段的文档，原型等。对于新用户来说，clone 一次需要很长时间（网速也是槽点）。因此决定将原仓库拆分，将源码子目录作为一个新的仓库，并且需要保留和子目录相关的 log 记录。</p>
+<p>一．前期准备<br>所有的命令在 Git-shell 中进行</p>
+<ol>
+<li> 原仓库在本地的目录结构如下图：</li>
+</ol>
+<p>1524103977(1).png (10.27 KB, 下载次数: 0)</p>
+<p>下载附件   保存到相册</p>
+<p>1  小时前 上传</p>
+<ol start="2">
+<li> 描述约定</li>
+</ol>
+<p>为了更好的描述命令，先定义一下命令中占位符的意义<br>原仓库：<old-repo><br>新仓库：<new-repo><br>想要分离出来的子文件夹名称： <name-of-folder><br>新的远端地址：<new-git-url><br>注意：如果你在使用 Windows，且该文件夹深度 &gt; 1，你必须使用斜杠   / 作为目录分隔符而不是默认的反斜杠 <br>二．迁移（使用 filter-branch 命令）</p>
+<p>由于我需要迁移的子目录包含中文名，因此需要使用 filter-branch 命令来实现迁移，当然，如果不包含中文的目录也可以使用 git1.8 版本以后的 subtree 来实现，该方法稍后说明。</p>
+<ol>
+<li> 首先，clone 一份原仓库并删掉原来的 remote：（依次执行以下命令）</li>
+</ol>
+<p>（1）git clone <big-repo>  <new-repo><br>（2）cd <new-repo><br>（3）git remote rm origin</p>
+<ol start="2">
+<li> 然后运行如下命令（这是重点）：</li>
+</ol>
+<p>（1）git filter-branch –tag-name-filter cat –prune-empty –subdirectory-filter <name-of-folder> – –all</p>
+<p>这条命令同样会过滤所有历史提交，只保留所有对指定子目录有影响的提交，并将该子目录设为该仓库的根目录。这里说明各下个参数的作用：<br>--tag-name-filter 该参数控制我们要如何处理旧的 tag，cat 即表示原样输出；<br>--prune-empty 删除空的（对子目录没有影响的）提交；<br>--subdirectory-filter 指定子目录路径；<br>-- –all 该参数必须跟在   – 后面，表示对所有分支进行操作。如果你只想保存当前分支，也可以不添加此参数。</p>
+<ol start="3">
+<li> 清理.git 的 object</li>
+</ol>
+<p>当上述命令执行完毕后，就可以看到本地的新仓库已经是原仓库子目录中的内容了，且保留了关于该子目录所有的提交历史。不过只是这样的话新仓库中的<br>.git 目录里还是保存有不少无用的 object，我们需要将其清除掉以减小新仓库的体积（如果你用 subtree 的方法的话是不需要执行这一步的）。<br>依次执行以下命令：<br>（1）git reset –hard</p>
+<p>（2）git for-each-ref –format=”%(refname)” refs/original/ |xargs -n 1 git update-ref -d</p>
+<p>（3）git reflog expire –expire=now –all<br>（4）git gc –aggressive –prune=now</p>
+<ol start="4">
+<li> 将新的本地仓库推送到远端</li>
+</ol>
+<p>cd 到<new-repo><br>（1）添加远端地址:<br>                git remote add origin <new-git-url><br>（2）推送到远端：<br>                git push -u origin master</p>
+<p>特别注意：如果当前远端库是空的话，上述命令是好使的，由于我开始手贱，已经在新的 git 地址 clone 到本地，并且还新建了一个测试文件夹，因此导致新的 git 仓库的 master 不再是最新的了。因此可以先提交到 dev 分支：git push origin master:dev</p>
+<ol start="5">
+<li> 合并 dev 到 master（可选）</li>
+</ol>
+<p>如果第 4 步已经直接推动到 master 了。第 5 步可忽略。<br>（1）首先将本地 dev 合并到本地 master<br>        ① 切换到 master 分支<br>        ②git merge origan/dev –allow-unrelated-histories<br>由于是第一次合并，因此需要加上–allow-unrelated-histories，允许两个没有关联的历史合并在一起。后续的合并就不需要了。<br>（2）将本地 master push 到远端<br>（3）<br>至此，使用 filter-branch 方式拆分 git 库已经完成。有木有心动，去试试吧。<br>三．补充 subtree 方式迁移<br>要求拆分的目录没有中文名 1.首先，进入<big-repo> 所在的目录，创建一个<name-of-new-branch>的临时分支，运行：<br>git subtree split -P <name-of-folder> -b <name-of-new-branch></p>
+<ol start="2">
+<li> 然后，我们创建一个新的 git 仓库：</li>
+</ol>
+<p>（1）mkdir  <new-repo><br>（2）git init<br>3. 接着把原仓库中的临时分支拉到新仓库中：<br>git pull &lt;/path/to/big-repo&gt;  <name-of-new-branch></p>
+<h2 id="好了，完成。现在看看你的新仓库，是不是已经包含了原子文件夹中的所有文件和你之前在原仓库中的所有提交历史呢？后续步骤就可参照第二章中的-3-4-5-步了。-xA-虽然网上一搜一大堆，还是希望能帮助有需要的同学，至少可以避免我踩过的坑了。-xA-参考：https-blessing-studio-splitting-a-subfolder-out-into-a-new-git-repository"><a href="#好了，完成。现在看看你的新仓库，是不是已经包含了原子文件夹中的所有文件和你之前在原仓库中的所有提交历史呢？后续步骤就可参照第二章中的-3-4-5-步了。-xA-虽然网上一搜一大堆，还是希望能帮助有需要的同学，至少可以避免我踩过的坑了。-xA-参考：https-blessing-studio-splitting-a-subfolder-out-into-a-new-git-repository" class="headerlink" title="好了，完成。现在看看你的新仓库，是不是已经包含了原子文件夹中的所有文件和你之前在原仓库中的所有提交历史呢？后续步骤就可参照第二章中的 3,4,5 步了。&#xA;虽然网上一搜一大堆，还是希望能帮助有需要的同学，至少可以避免我踩过的坑了。&#xA;参考：https://blessing.studio/splitting-a-subfolder-out-into-a-new-git-repository/"></a>好了，完成。现在看看你的新仓库，是不是已经包含了原子文件夹中的所有文件和你之前在原仓库中的所有提交历史呢？后续步骤就可参照第二章中的 3,4,5 步了。&#xA;虽然网上一搜一大堆，还是希望能帮助有需要的同学，至少可以避免我踩过的坑了。&#xA;参考：<a target="_blank" rel="noopener" href="https://blessing.studio/splitting-a-subfolder-out-into-a-new-git-repository/">https://blessing.studio/splitting-a-subfolder-out-into-a-new-git-repository/</a></h2><p>作者：天空神话<br>来源：CSDN<br>原文：<a target="_blank" rel="noopener" href="https://blog.csdn.net/wang252949/article/details/80003791">https://blog.csdn.net/wang252949/article/details/80003791</a><br>版权声明：本文为博主原创文章，转载请附上博文链接！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/git/" rel="tag"># git</a>
+              <a href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/07/3298560e9be04fa390585d25c0034342/" rel="prev" title="[转]git clone 克隆所有分支">
+      <i class="fa fa-chevron-left"></i> [转]git clone 克隆所有分支
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/07/117accd68b4044b394ecb2d9ce93b3b0/" rel="next" title="重整仓库">
+      重整仓库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A5%BD%E4%BA%86%EF%BC%8C%E5%AE%8C%E6%88%90%E3%80%82%E7%8E%B0%E5%9C%A8%E7%9C%8B%E7%9C%8B%E4%BD%A0%E7%9A%84%E6%96%B0%E4%BB%93%E5%BA%93%EF%BC%8C%E6%98%AF%E4%B8%8D%E6%98%AF%E5%B7%B2%E7%BB%8F%E5%8C%85%E5%90%AB%E4%BA%86%E5%8E%9F%E5%AD%90%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%E5%92%8C%E4%BD%A0%E4%B9%8B%E5%89%8D%E5%9C%A8%E5%8E%9F%E4%BB%93%E5%BA%93%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%8F%90%E4%BA%A4%E5%8E%86%E5%8F%B2%E5%91%A2%EF%BC%9F%E5%90%8E%E7%BB%AD%E6%AD%A5%E9%AA%A4%E5%B0%B1%E5%8F%AF%E5%8F%82%E7%85%A7%E7%AC%AC%E4%BA%8C%E7%AB%A0%E4%B8%AD%E7%9A%84-3-4-5-%E6%AD%A5%E4%BA%86%E3%80%82-xA-%E8%99%BD%E7%84%B6%E7%BD%91%E4%B8%8A%E4%B8%80%E6%90%9C%E4%B8%80%E5%A4%A7%E5%A0%86%EF%BC%8C%E8%BF%98%E6%98%AF%E5%B8%8C%E6%9C%9B%E8%83%BD%E5%B8%AE%E5%8A%A9%E6%9C%89%E9%9C%80%E8%A6%81%E7%9A%84%E5%90%8C%E5%AD%A6%EF%BC%8C%E8%87%B3%E5%B0%91%E5%8F%AF%E4%BB%A5%E9%81%BF%E5%85%8D%E6%88%91%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91%E4%BA%86%E3%80%82-xA-%E5%8F%82%E8%80%83%EF%BC%9Ahttps-blessing-studio-splitting-a-subfolder-out-into-a-new-git-repository"><span class="nav-number">1.</span> <span class="nav-text">好了，完成。现在看看你的新仓库，是不是已经包含了原子文件夹中的所有文件和你之前在原仓库中的所有提交历史呢？后续步骤就可参照第二章中的 3,4,5 步了。
+虽然网上一搜一大堆，还是希望能帮助有需要的同学，至少可以避免我踩过的坑了。
+参考：https:&#x2F;&#x2F;blessing.studio&#x2F;splitting-a-subfolder-out-into-a-new-git-repository&#x2F;</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhl</p>
+  <div class="site-description" itemprop="description">记录作者的一些历程，很杂乱，涉及很广...我也不知道我会什么</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhl</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '90ad172ea65d425400d8',
+      clientSecret: 'b6b9739426a1c602e3b41e513344a8ba7429e597',
+      repo        : 'ytianxia6.github.io',
+      owner       : 'ytianxia6',
+      admin       : ['ytianxia6'],
+      id          : '8962529004cfa92dd0d99ab6d2e248aa',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
