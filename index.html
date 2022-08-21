@@ -148,7 +148,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2022/08/21/137ffe52017f4ca8ba4c4e9cfac60461/">
+    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2022/01/10/7aae2d2ba3dd4b2a894613620f656bd7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -162,7 +162,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/08/21/137ffe52017f4ca8ba4c4e9cfac60461/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2022/01/10/7aae2d2ba3dd4b2a894613620f656bd7/" class="post-title-link" itemprop="url">VSCode 使用docker-compose进行golang开发</a>
         </h2>
 
         <div class="post-meta">
@@ -171,8 +171,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-08-21 15:56:39" itemprop="dateCreated datePublished" datetime="2022-08-21T15:56:39+08:00">2022-08-21</time>
+              <time title="创建时间：2022-01-10 14:56:30 / 修改时间：16:18:51" itemprop="dateCreated datePublished" datetime="2022-01-10T14:56:30+08:00">2022-01-10</time>
             </span>
 
           
@@ -186,7 +187,54 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <h1 id="VSCode-使用-docker-compose-进行-golang-开发"><a href="#VSCode-使用-docker-compose-进行-golang-开发" class="headerlink" title="VSCode 使用 docker-compose 进行 golang 开发"></a>VSCode 使用 docker-compose 进行 golang 开发</h1><h2 id="O-前言"><a href="#O-前言" class="headerlink" title="O 前言"></a>O 前言</h2><p>在网上搜索使用 vscode 进行 golang 的 docker 配置，有大量的文章，在官网也有很详细的说明，但我就是看不明白！！</p>
+<p>自己搞了一晚上，总算把所有的坑填上了。记录一下，聊以自慰。</p>
+<h2 id="一、-前置操作"><a href="#一、-前置操作" class="headerlink" title="一、 前置操作"></a>一、 前置操作</h2><h3 id="安装-vscode-略"><a href="#安装-vscode-略" class="headerlink" title="安装 vscode 略"></a>安装 vscode 略</h3><h3 id="安装-golang-略"><a href="#安装-golang-略" class="headerlink" title="安装 golang 略"></a>安装 golang 略</h3><h3 id="golang-使用-module-模式而非-GOPATH-略"><a href="#golang-使用-module-模式而非-GOPATH-略" class="headerlink" title="golang 使用 module 模式而非 GOPATH, 略"></a>golang 使用 module 模式而非 GOPATH, 略</h3><h3 id="vscode-中安装-remote-containers-插件，略"><a href="#vscode-中安装-remote-containers-插件，略" class="headerlink" title="vscode 中安装 remote-containers 插件，略"></a>vscode 中安装 remote-containers 插件，略</h3><h2 id="二、新建-go-项目"><a href="#二、新建-go-项目" class="headerlink" title="二、新建 go 项目"></a>二、新建 go 项目</h2><ol>
+<li><p> 创建文件夹 <code>/golang/study.06</code>， 并使用 vscode 打开。</p>
+</li>
+<li><p> 新建<code>main.go</code></p>
+</li>
+</ol>
+<p>我这里使用`</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">homepage</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 显示内容</span></span><br><span class="line">	fmt.Fprintf(w, <span class="string">&quot;Hello golang http in docker！&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 设置路由</span></span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/&quot;</span>, homepage)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 启动web服务，监听 9090</span></span><br><span class="line">	log.Fatel(http.ListenAndServe(<span class="string">&quot;:9090&quot;</span>, <span class="literal">nil</span>))</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li> 初始化模块</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化模块</span></span><br><span class="line">go mod init study06</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载依赖模块</span></span><br><span class="line">go mod tidy</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li> 测试</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 启动服务</span><br><span class="line">go run .</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在浏览器查看<code>http://localhost:9090</code> ，可以看到效果。<br><img src="/resource/192740b583244d7c86a5cdc10f3017f7.png" alt="7e456104be1a3f46c969fde1e1e5e9e1.png"></p>
+<ol start="5">
+<li> 文件目录</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">study.06</span><br><span class="line">|-- go.mod</span><br><span class="line">|-- main.go</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、添加-docker-compose-支持"><a href="#三、添加-docker-compose-支持" class="headerlink" title="三、添加 docker-compose 支持"></a>三、添加 docker-compose 支持</h2><h3 id="1-添加模板"><a href="#1-添加模板" class="headerlink" title="1. 添加模板"></a>1. 添加模板</h3><p>执行 <code>F1</code>， <code>Remote-Containers: Add Development Container Configuration Files</code>，依次选择 <code>Go</code>， <code>default</code>，<code>lts(default)</code>，<code>确定</code>。</p>
+<p><img src="/resource/93278618dd8140189629f782e3543207.png" alt="1db1d262bfe97deb5c5b18c3b8b66db7.png"></p>
+<p><img src="/resource/8a353506ae124b7e80fa76ae437389ff.png" alt="975a40e45152240da6ca215df7ff1de9.png"></p>
+<p><img src="/resource/efefecdb4bae4916b67c9f803c07822a.png" alt="8c8634f9e8f971273fd1e32af3e6ee71.png"></p>
+<p><img src="/resource/795e3a1e3cd5491986e45d684f6b6aae.png" alt="2ff97372787872284f87c9d4d75e5885.png"></p>
+<p><img src="/resource/1cf3215966374073be4a30c066570f4d.png" alt="3c125d21da1d8f0f313cb4f6e9d8223c.png"></p>
+<p>此时，添加了 <code>.devcontainer/.devcontiner.json</code>和<code>.devcontaier/Dockerfile</code>两个文件。</p>
+<h3 id="2-使用docker-compose"><a href="#2-使用docker-compose" class="headerlink" title="2. 使用docker-compose"></a>2. 使用<code>docker-compose</code></h3><p>在<code>.devcontainer</code>中添加<code>docker-compose.yml</code>,也可以多添加几个配置，如<code>docker-compose.dev.yml</code>。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">study-06:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">.</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.dev.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">study-06:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">.</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">..:/workspace:cached</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9090</span><span class="string">:9090</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">cap_add:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SYS_PTRACE</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">security_opt:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">seccomp:unconfined</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">command:</span> <span class="string">/bin/sh</span> <span class="string">-c</span> <span class="string">&quot;while sleep 1000; do :; done&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-修改-devcontainer-json"><a href="#3-修改-devcontainer-json" class="headerlink" title="3. 修改 devcontainer.json"></a>3. 修改 <code>devcontainer.json</code></h3><p>默认配置是使用<code>Dockerfile</code>的，修改<code>devcontainer.json</code> 以使用<code>docker-compose</code>。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:</span></span><br><span class="line"><span class="comment">// https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/go</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Go&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;dockerComposeFile&quot;</span>: [<span class="string">&quot;docker-compose.yml&quot;</span>, <span class="string">&quot;docker-compose.dev.yml&quot;</span>],</span><br><span class="line">  <span class="attr">&quot;service&quot;</span>: <span class="string">&quot;study-06&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;workspaceFolder&quot;</span>: <span class="string">&quot;/workspace&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;shutdownAction&quot;</span>: <span class="string">&quot;stopCompose&quot;</span>,</span><br><span class="line">  <span class="comment">// &quot;build&quot;: &#123;</span></span><br><span class="line">  <span class="comment">// 	&quot;dockerfile&quot;: &quot;Dockerfile&quot;,</span></span><br><span class="line">  <span class="comment">// 	&quot;args&quot;: &#123;</span></span><br><span class="line">  <span class="comment">// 		// Update the VARIANT arg to pick a version of Go: 1, 1.16, 1.17</span></span><br><span class="line">  <span class="comment">// 		// Append -bullseye or -buster to pin to an OS version.</span></span><br><span class="line">  <span class="comment">// 		// Use -bullseye variants on local arm64/Apple Silicon.</span></span><br><span class="line">  <span class="comment">// 		&quot;VARIANT&quot;: &quot;1-bullseye&quot;,</span></span><br><span class="line">  <span class="comment">// 		// Options</span></span><br><span class="line">  <span class="comment">// 		&quot;NODE_VERSION&quot;: &quot;lts/*&quot;</span></span><br><span class="line">  <span class="comment">// 	&#125;</span></span><br><span class="line">  <span class="comment">// &#125;,</span></span><br><span class="line">  <span class="comment">// &quot;runArgs&quot;: [ &quot;--cap-add=SYS_PTRACE&quot;, &quot;--security-opt&quot;, &quot;seccomp=unconfined&quot; ],</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Set *default* container specific settings.json values on container create.</span></span><br><span class="line">  <span class="attr">&quot;settings&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;go.toolsManagement.checkForUpdates&quot;</span>: <span class="string">&quot;local&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;go.useLanguageServer&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;go.gopath&quot;</span>: <span class="string">&quot;/go&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;go.goroot&quot;</span>: <span class="string">&quot;/usr/local/go&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Add the IDs of extensions you want installed when the container is created.</span></span><br><span class="line">  <span class="attr">&quot;extensions&quot;</span>: [<span class="string">&quot;golang.Go&quot;</span>],</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Use &#x27;forwardPorts&#x27; to make a list of ports inside the container available locally.</span></span><br><span class="line">  <span class="comment">// &quot;forwardPorts&quot;: [],</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Use &#x27;postCreateCommand&#x27; to run commands after the container is created.</span></span><br><span class="line">  <span class="comment">// &quot;postCreateCommand&quot;: &quot;go version&quot;,</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.</span></span><br><span class="line">  <span class="attr">&quot;remoteUser&quot;</span>: <span class="string">&quot;vscode&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-修改Dockerfile"><a href="#4-修改Dockerfile" class="headerlink" title="4. 修改Dockerfile"></a>4. 修改<code>Dockerfile</code></h3><p>最后添加 <code>Expose 9090</code> 绑定端口</p>
+<h3 id="5-在容器中打开文件夹"><a href="#5-在容器中打开文件夹" class="headerlink" title="5. 在容器中打开文件夹"></a>5. 在容器中打开文件夹</h3><p><code>F1</code> 执行 <code>Open Folder in Container</code>,选择 <code>study.06</code>目录，此时<code>vscode</code>会编译并运行镜像，进入镜像中的环境。</p>
+<p><img src="/resource/85cbc4ef168343b6beccb7e49273986f.png" alt="6aac815f71728ea0548056b136af6619.png"></p>
+<p>执行 <code>go run .</code>，就可以在 <code>http://localhost:9090</code> 中看到结果了。</p>
+<h3 id="6-更新"><a href="#6-更新" class="headerlink" title="6. 更新"></a>6. 更新</h3><p>如果对<code>docker</code>文件进行任何修改后，可以执行 <code>F1</code> -&gt; <code>Rebuild 重新生成镜像</code>。</p>
+
       
     </div>
 
@@ -205,7 +253,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2022/08/21/7aae2d2ba3dd4b2a894613620f656bd7/">
+    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2020/08/03/137ffe52017f4ca8ba4c4e9cfac60461/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -219,7 +267,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/08/21/7aae2d2ba3dd4b2a894613620f656bd7/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2020/08/03/137ffe52017f4ca8ba4c4e9cfac60461/" class="post-title-link" itemprop="url">wpf 绑定ListViewItem</a>
         </h2>
 
         <div class="post-meta">
@@ -228,8 +276,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-08-21 15:56:39" itemprop="dateCreated datePublished" datetime="2022-08-21T15:56:39+08:00">2022-08-21</time>
+              <time title="创建时间：2020-08-04 00:35:49 / 修改时间：00:43:50" itemprop="dateCreated datePublished" datetime="2020-08-04T00:35:49+08:00">2020-08-04</time>
             </span>
 
           
@@ -243,7 +292,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <p><s><a target="_blank" rel="noopener" href="http://maxiang.info/#/?provider=evernote&guid=9b1a9f14-7cb3-400a-ba72-0f988b591f06&notebook=blog">Edit</a></s></p>
+<h1 id="wpf-绑定-ListViewItem"><a href="#wpf-绑定-ListViewItem" class="headerlink" title="wpf 绑定 ListViewItem"></a>wpf 绑定 ListViewItem</h1><p>Wpf 绑定<code>ListViewItem</code> 中的控件 <code>Command</code> 到 <code>ViewModel</code> ：</p>
+<h2 id="1-给Window-定义名字："><a href="#1-给Window-定义名字：" class="headerlink" title="1. 给Window 定义名字："></a>1. 给<code>Window</code> 定义名字：</h2><p><code>&lt;Window x:Name=&quot;ThisWnd&quot;&gt;</code><br>在绑定时找到指定名字</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;ListView&gt;</span><br><span class="line"></span><br><span class="line">    &lt;ListView.ItemTemplate&gt;</span><br><span class="line"></span><br><span class="line">        &lt;DataTemplate&gt;</span><br><span class="line"></span><br><span class="line">            &lt;Button Command=&quot;&#123;Binding ElementName=ThisWnd, Path=DataContext.CallCommand&#125;&quot;</span><br><span class="line"></span><br><span class="line">            Text=&#123;Binding Name&#125;&gt;&lt;/Button&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-相对路径查找"><a href="#2-相对路径查找" class="headerlink" title="2. 相对路径查找"></a>2. 相对路径查找</h2><p>另一种方式是根据类型或层次查找</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;ListView&gt;</span><br><span class="line"></span><br><span class="line">    &lt;ListView.ItemTemplate&gt;</span><br><span class="line"></span><br><span class="line">        &lt;DataTemplate&gt;</span><br><span class="line"></span><br><span class="line">            &lt;Button Command=&quot;&#123;Binding RelativeSource=&#123;RelativeSource FindAncestor, AncestorType=&#123;x:Type ListView&#125;&#125;, Path=DataContext.CallCommand&#125;&quot;</span><br><span class="line"></span><br><span class="line">            Text=&#123;Binding Name&#125;&gt;&lt;/Button&gt;</span><br></pre></td></tr></table></figure>
+
+<div style="display: none;">@%28blog%29%5B.net%2C%20mvvm%2C%20wpf%2C%20posts%5D%0A%0A%23%20wpf%20%u7ED1%u5B9AListViewItem%0A%0AWpf%20%u7ED1%u5B9A%60ListViewItem%60%20%u4E2D%u7684%u63A7%u4EF6%20%60Command%60%20%u5230%20%60ViewModel%60%20%uFF1A%0A%0A%23%23%201.%20%u7ED9%60Window%60%20%u5B9A%u4E49%u540D%u5B57%uFF1A%0A%0A%60%60%60c%23%0A%3CWindow%20x%3AName%3D%22ThisWnd%22%3E%0A%60%60%60%0A%0A%u5728%u7ED1%u5B9A%u65F6%u627E%u5230%u6307%u5B9A%u540D%u5B57%0A%0A%60%60%60c%23%0A%3CListView%3E%0A%09%3CListView.ItemTemplate%3E%0A%09%09%3CDataTemplate%3E%0A%09%09%09%3CButton%20Command%3D%22%7BBinding%20ElementName%3DThisWnd%2C%20Path%3DDataContext.CallCommand%7D%22%0A%09%09%09Text%3D%7BBinding%20Name%7D%3E%3C/Button%3E%0A%60%60%60%0A%0A%23%23%202.%20%u76F8%u5BF9%u8DEF%u5F84%u67E5%u627E%0A%u53E6%u4E00%u79CD%u65B9%u5F0F%u662F%u6839%u636E%u7C7B%u578B%u6216%u5C42%u6B21%u67E5%u627E%0A%0A%60%60%60%20c%23%0A%3CListView%3E%0A%09%3CListView.ItemTemplate%3E%0A%09%09%3CDataTemplate%3E%0A%09%09%09%3CButton%20Command%3D%22%7BBinding%20RelativeSource%3D%7BRelativeSource%20FindAncestor%2C%20AncestorType%3D%7Bx%3AType%20ListView%7D%7D%2C%20Path%3DDataContext.CallCommand%7D%22%0A%09%09%09Text%3D%7BBinding%20Name%7D%3E%3C/Button%3E%0A%0A%60%60%60</div>
+
       
     </div>
 
@@ -262,7 +320,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2022/08/21/7d937fdcf868470eabb69465b94d0e8c/">
+    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2020/07/08/7d937fdcf868470eabb69465b94d0e8c/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -276,7 +334,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/08/21/7d937fdcf868470eabb69465b94d0e8c/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2020/07/08/7d937fdcf868470eabb69465b94d0e8c/" class="post-title-link" itemprop="url">查找MsBuild.exe</a>
         </h2>
 
         <div class="post-meta">
@@ -285,8 +343,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-08-21 15:56:39" itemprop="dateCreated datePublished" datetime="2022-08-21T15:56:39+08:00">2022-08-21</time>
+              <time title="创建时间：2020-07-09 05:23:50 / 修改时间：05:29:52" itemprop="dateCreated datePublished" datetime="2020-07-09T05:23:50+08:00">2020-07-09</time>
             </span>
 
           
@@ -300,7 +359,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <p><s><a target="_blank" rel="noopener" href="http://maxiang.info/#/?provider=evernote&guid=1a061c0b-3197-4fea-b895-7c75d3886af1&notebook=blog">Edit</a></s></p>
+<h1 id="查找-MsBuild-exe"><a href="#查找-MsBuild-exe" class="headerlink" title="查找 MsBuild.exe"></a>查找 MsBuild.exe</h1><h2 id="早期"><a href="#早期" class="headerlink" title="早期"></a>早期</h2><p>适用于.net4.0<br><code>set MSBuild=%windir%\Microsoft.NET\Framework\v4.0.30319\MsBuild.exe</code></p>
+<h2 id="Vs2017"><a href="#Vs2017" class="headerlink" title="Vs2017"></a>Vs2017</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">for /f &quot;tokens=1,2*&quot; %%i in (&#x27;&quot;reg query &quot;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\SxS\VS7&quot; /v  15.0&quot;&#x27;) do (set &quot;Vs17=%%k&quot;)</span><br><span class="line"></span><br><span class="line">if &quot;%vs17%&quot; == &quot;&quot; (for /f &quot;tokens=1,2*&quot; %%i in (&#x27;&quot;reg query &quot;HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7&quot; /v  15.0&quot;&#x27;) do (set &quot;Vs17=%%k&quot;))</span><br><span class="line"></span><br><span class="line">set &quot;MSBuild=%vs17%\MSBuild\15.0\Bin\MsBuild.exe&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="最新-vswhere"><a href="#最新-vswhere" class="headerlink" title="最新 vswhere"></a>最新 vswhere</h2><p><a target="_blank" rel="noopener" href="https://github.com/microsoft/vswhere/wiki/Find-MSBuild">vswhere 查找 Msbuild</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line"></span><br><span class="line">setlocal enabledelayedexpansion</span><br><span class="line"></span><br><span class="line">set &quot;VsWhere=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe&quot;</span><br><span class="line"></span><br><span class="line">for /f &quot;usebackq tokens=*&quot; %%i in (`&quot;%VsWhere%&quot; -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do (</span><br><span class="line"></span><br><span class="line">  &quot;%%i&quot; %*</span><br><span class="line"></span><br><span class="line">  exit /b !errorlevel!</span><br><span class="line"></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<div style="display: none;">@%28blog%29%5BVisual%20Studio%2C%20msbuild%2C%20posts%5D%0A%0A%23%20%u67E5%u627EMsBuild.exe%0A%0A%23%23%20%u65E9%u671F%0A%0A%u9002%u7528%u4E8E.net4.0%0A%60%60%60bash%0Aset%20MSBuild%3D%25windir%25%5CMicrosoft.NET%5CFramework%5Cv4.0.30319%5CMsBuild.exe%0A%60%60%60%0A%0A%23%23%20Vs2017%0A%0A%0A%60%60%60%20bash%0Afor%20/f%20%22tokens%3D1%2C2*%22%20%25%25i%20in%20%28%27%22reg%20query%20%22HKEY_LOCAL_MACHINE%5CSOFTWARE%5CMicrosoft%5CVisualStudio%5CSxS%5CVS7%22%20/v%20%2015.0%22%27%29%20do%20%28set%20%22Vs17%3D%25%25k%22%29%0Aif%20%22%25vs17%25%22%20%3D%3D%20%22%22%20%28for%20/f%20%22tokens%3D1%2C2*%22%20%25%25i%20in%20%28%27%22reg%20query%20%22HKEY_LOCAL_MACHINE%5CSOFTWARE%5CWOW6432Node%5CMicrosoft%5CVisualStudio%5CSxS%5CVS7%22%20/v%20%2015.0%22%27%29%20do%20%28set%20%22Vs17%3D%25%25k%22%29%29%0A%0Aset%20%22MSBuild%3D%25vs17%25%5CMSBuild%5C15.0%5CBin%5CMsBuild.exe%22%0A%0A%60%60%60%0A%0A%23%23%20%u6700%u65B0%20vswhere%0A%0A%5Bvswhere%u67E5%u627EMsbuild%5D%28https%3A//github.com/microsoft/vswhere/wiki/Find-MSBuild%29%0A%60%60%60bash%0A@echo%20off%0Asetlocal%20enabledelayedexpansion%0A%0Aset%20%22VsWhere%3D%25ProgramFiles%28x86%29%25%5CMicrosoft%20Visual%20Studio%5CInstaller%5Cvswhere.exe%22%0A%0Afor%20/f%20%22usebackq%20tokens%3D*%22%20%25%25i%20in%20%28%60%22%25VsWhere%25%22%20-latest%20-requires%20Microsoft.Component.MSBuild%20-find%20MSBuild%5C**%5CBin%5CMSBuild.exe%60%29%20do%20%28%0A%20%20%22%25%25i%22%20%25*%0A%20%20exit%20/b%20%21errorlevel%21%0A%29%0A%60%60%60</div>
+
       
     </div>
 
@@ -319,7 +386,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2022/08/21/938d3ac24ccd4386ae0b5ec340456be5/">
+    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2020/05/05/938d3ac24ccd4386ae0b5ec340456be5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -333,7 +400,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/08/21/938d3ac24ccd4386ae0b5ec340456be5/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2020/05/05/938d3ac24ccd4386ae0b5ec340456be5/" class="post-title-link" itemprop="url">更新virtualbox</a>
         </h2>
 
         <div class="post-meta">
@@ -342,8 +409,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-08-21 15:56:39" itemprop="dateCreated datePublished" datetime="2022-08-21T15:56:39+08:00">2022-08-21</time>
+              <time title="创建时间：2020-05-06 01:44:42 / 修改时间：01:45:14" itemprop="dateCreated datePublished" datetime="2020-05-06T01:44:42+08:00">2020-05-06</time>
             </span>
 
           
@@ -357,7 +425,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <p><a target="_blank" rel="noopener" href="https://askubuntu.com/questions/827733/removing-virtualbox-5-1-in-a-stuck-state">https://askubuntu.com/questions/827733/removing-virtualbox-5-1-in-a-stuck-state</a></p>
+<p>您可能正在运行 VirtualBox 的自动启动服务。通过运行以下命令进行检查。<br>sudo systemctl status vboxautostart-service<br>如果它正在运行，则停止它。<br>sudo systemctl stop vboxautostart-service<br>然后找到并杀死使用以下命令运行的所有进程。（大约是三（3））<br>ps -A | grep VB<br>sudo kill <pid><br>最后，删除并清除 VirtualBox<br>sudo apt-get remove virtualbox-* –purge</p>
+
       
     </div>
 
@@ -1210,7 +1280,7 @@
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ytianxia6.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="VSCode 使用 docker-compose 进行 golang 开发O 前言在网上搜索使用 vscode 进行 golang 的 docker 配置，有大量的文章，在官网也有很详细的说明，但我就是看不明白！！ 自己搞了一晚上，总算把所有的坑填上了。记录一下，聊以自慰。 一、 前置操作安装 vscode 略安装 golang 略golang 使用 module 模式而非 GOPATH, 略vs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VSCode 使用docker-compose进行golang开发">
+<meta property="og:url" content="http://ytianxia6.github.io/2022/01/10/7aae2d2ba3dd4b2a894613620f656bd7/index.html">
+<meta property="og:site_name" content="Haroon的个人博客">
+<meta property="og:description" content="VSCode 使用 docker-compose 进行 golang 开发O 前言在网上搜索使用 vscode 进行 golang 的 docker 配置，有大量的文章，在官网也有很详细的说明，但我就是看不明白！！ 自己搞了一晚上，总算把所有的坑填上了。记录一下，聊以自慰。 一、 前置操作安装 vscode 略安装 golang 略golang 使用 module 模式而非 GOPATH, 略vs">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://ytianxia6.github.io/resource/192740b583244d7c86a5cdc10f3017f7.png">
+<meta property="og:image" content="http://ytianxia6.github.io/resource/93278618dd8140189629f782e3543207.png">
+<meta property="og:image" content="http://ytianxia6.github.io/resource/8a353506ae124b7e80fa76ae437389ff.png">
+<meta property="og:image" content="http://ytianxia6.github.io/resource/efefecdb4bae4916b67c9f803c07822a.png">
+<meta property="og:image" content="http://ytianxia6.github.io/resource/795e3a1e3cd5491986e45d684f6b6aae.png">
+<meta property="og:image" content="http://ytianxia6.github.io/resource/1cf3215966374073be4a30c066570f4d.png">
+<meta property="og:image" content="http://ytianxia6.github.io/resource/85cbc4ef168343b6beccb7e49273986f.png">
+<meta property="article:published_time" content="2022-01-10T06:56:30.166Z">
+<meta property="article:modified_time" content="2022-01-10T08:18:51.737Z">
+<meta property="article:author" content="yhl">
+<meta property="article:tag" content="golang">
+<meta property="article:tag" content="vscode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ytianxia6.github.io/resource/192740b583244d7c86a5cdc10f3017f7.png">
+
+<link rel="canonical" href="http://ytianxia6.github.io/2022/01/10/7aae2d2ba3dd4b2a894613620f656bd7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>VSCode 使用docker-compose进行golang开发 | Haroon的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Haroon的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">没人管的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://ytianxia6.github.io/2022/01/10/7aae2d2ba3dd4b2a894613620f656bd7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhl">
+      <meta itemprop="description" content="记录作者的一些历程，很杂乱，涉及很广...我也不知道我会什么">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Haroon的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VSCode 使用docker-compose进行golang开发
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-10 14:56:30 / 修改时间：16:18:51" itemprop="dateCreated datePublished" datetime="2022-01-10T14:56:30+08:00">2022-01-10</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="VSCode-使用-docker-compose-进行-golang-开发"><a href="#VSCode-使用-docker-compose-进行-golang-开发" class="headerlink" title="VSCode 使用 docker-compose 进行 golang 开发"></a>VSCode 使用 docker-compose 进行 golang 开发</h1><h2 id="O-前言"><a href="#O-前言" class="headerlink" title="O 前言"></a>O 前言</h2><p>在网上搜索使用 vscode 进行 golang 的 docker 配置，有大量的文章，在官网也有很详细的说明，但我就是看不明白！！</p>
+<p>自己搞了一晚上，总算把所有的坑填上了。记录一下，聊以自慰。</p>
+<h2 id="一、-前置操作"><a href="#一、-前置操作" class="headerlink" title="一、 前置操作"></a>一、 前置操作</h2><h3 id="安装-vscode-略"><a href="#安装-vscode-略" class="headerlink" title="安装 vscode 略"></a>安装 vscode 略</h3><h3 id="安装-golang-略"><a href="#安装-golang-略" class="headerlink" title="安装 golang 略"></a>安装 golang 略</h3><h3 id="golang-使用-module-模式而非-GOPATH-略"><a href="#golang-使用-module-模式而非-GOPATH-略" class="headerlink" title="golang 使用 module 模式而非 GOPATH, 略"></a>golang 使用 module 模式而非 GOPATH, 略</h3><h3 id="vscode-中安装-remote-containers-插件，略"><a href="#vscode-中安装-remote-containers-插件，略" class="headerlink" title="vscode 中安装 remote-containers 插件，略"></a>vscode 中安装 remote-containers 插件，略</h3><h2 id="二、新建-go-项目"><a href="#二、新建-go-项目" class="headerlink" title="二、新建 go 项目"></a>二、新建 go 项目</h2><ol>
+<li><p> 创建文件夹 <code>/golang/study.06</code>， 并使用 vscode 打开。</p>
+</li>
+<li><p> 新建<code>main.go</code></p>
+</li>
+</ol>
+<p>我这里使用`</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">homepage</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 显示内容</span></span><br><span class="line">	fmt.Fprintf(w, <span class="string">&quot;Hello golang http in docker！&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 设置路由</span></span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/&quot;</span>, homepage)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 启动web服务，监听 9090</span></span><br><span class="line">	log.Fatel(http.ListenAndServe(<span class="string">&quot;:9090&quot;</span>, <span class="literal">nil</span>))</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li> 初始化模块</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化模块</span></span><br><span class="line">go mod init study06</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载依赖模块</span></span><br><span class="line">go mod tidy</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li> 测试</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 启动服务</span><br><span class="line">go run .</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在浏览器查看<code>http://localhost:9090</code> ，可以看到效果。<br><img src="/resource/192740b583244d7c86a5cdc10f3017f7.png" alt="7e456104be1a3f46c969fde1e1e5e9e1.png"></p>
+<ol start="5">
+<li> 文件目录</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">study.06</span><br><span class="line">|-- go.mod</span><br><span class="line">|-- main.go</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、添加-docker-compose-支持"><a href="#三、添加-docker-compose-支持" class="headerlink" title="三、添加 docker-compose 支持"></a>三、添加 docker-compose 支持</h2><h3 id="1-添加模板"><a href="#1-添加模板" class="headerlink" title="1. 添加模板"></a>1. 添加模板</h3><p>执行 <code>F1</code>， <code>Remote-Containers: Add Development Container Configuration Files</code>，依次选择 <code>Go</code>， <code>default</code>，<code>lts(default)</code>，<code>确定</code>。</p>
+<p><img src="/resource/93278618dd8140189629f782e3543207.png" alt="1db1d262bfe97deb5c5b18c3b8b66db7.png"></p>
+<p><img src="/resource/8a353506ae124b7e80fa76ae437389ff.png" alt="975a40e45152240da6ca215df7ff1de9.png"></p>
+<p><img src="/resource/efefecdb4bae4916b67c9f803c07822a.png" alt="8c8634f9e8f971273fd1e32af3e6ee71.png"></p>
+<p><img src="/resource/795e3a1e3cd5491986e45d684f6b6aae.png" alt="2ff97372787872284f87c9d4d75e5885.png"></p>
+<p><img src="/resource/1cf3215966374073be4a30c066570f4d.png" alt="3c125d21da1d8f0f313cb4f6e9d8223c.png"></p>
+<p>此时，添加了 <code>.devcontainer/.devcontiner.json</code>和<code>.devcontaier/Dockerfile</code>两个文件。</p>
+<h3 id="2-使用docker-compose"><a href="#2-使用docker-compose" class="headerlink" title="2. 使用docker-compose"></a>2. 使用<code>docker-compose</code></h3><p>在<code>.devcontainer</code>中添加<code>docker-compose.yml</code>,也可以多添加几个配置，如<code>docker-compose.dev.yml</code>。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">study-06:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">.</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.dev.yml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">study-06:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">.</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">..:/workspace:cached</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9090</span><span class="string">:9090</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">cap_add:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SYS_PTRACE</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">security_opt:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">seccomp:unconfined</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">command:</span> <span class="string">/bin/sh</span> <span class="string">-c</span> <span class="string">&quot;while sleep 1000; do :; done&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-修改-devcontainer-json"><a href="#3-修改-devcontainer-json" class="headerlink" title="3. 修改 devcontainer.json"></a>3. 修改 <code>devcontainer.json</code></h3><p>默认配置是使用<code>Dockerfile</code>的，修改<code>devcontainer.json</code> 以使用<code>docker-compose</code>。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:</span></span><br><span class="line"><span class="comment">// https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/go</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Go&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;dockerComposeFile&quot;</span>: [<span class="string">&quot;docker-compose.yml&quot;</span>, <span class="string">&quot;docker-compose.dev.yml&quot;</span>],</span><br><span class="line">  <span class="attr">&quot;service&quot;</span>: <span class="string">&quot;study-06&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;workspaceFolder&quot;</span>: <span class="string">&quot;/workspace&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;shutdownAction&quot;</span>: <span class="string">&quot;stopCompose&quot;</span>,</span><br><span class="line">  <span class="comment">// &quot;build&quot;: &#123;</span></span><br><span class="line">  <span class="comment">// 	&quot;dockerfile&quot;: &quot;Dockerfile&quot;,</span></span><br><span class="line">  <span class="comment">// 	&quot;args&quot;: &#123;</span></span><br><span class="line">  <span class="comment">// 		// Update the VARIANT arg to pick a version of Go: 1, 1.16, 1.17</span></span><br><span class="line">  <span class="comment">// 		// Append -bullseye or -buster to pin to an OS version.</span></span><br><span class="line">  <span class="comment">// 		// Use -bullseye variants on local arm64/Apple Silicon.</span></span><br><span class="line">  <span class="comment">// 		&quot;VARIANT&quot;: &quot;1-bullseye&quot;,</span></span><br><span class="line">  <span class="comment">// 		// Options</span></span><br><span class="line">  <span class="comment">// 		&quot;NODE_VERSION&quot;: &quot;lts/*&quot;</span></span><br><span class="line">  <span class="comment">// 	&#125;</span></span><br><span class="line">  <span class="comment">// &#125;,</span></span><br><span class="line">  <span class="comment">// &quot;runArgs&quot;: [ &quot;--cap-add=SYS_PTRACE&quot;, &quot;--security-opt&quot;, &quot;seccomp=unconfined&quot; ],</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Set *default* container specific settings.json values on container create.</span></span><br><span class="line">  <span class="attr">&quot;settings&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;go.toolsManagement.checkForUpdates&quot;</span>: <span class="string">&quot;local&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;go.useLanguageServer&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;go.gopath&quot;</span>: <span class="string">&quot;/go&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;go.goroot&quot;</span>: <span class="string">&quot;/usr/local/go&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Add the IDs of extensions you want installed when the container is created.</span></span><br><span class="line">  <span class="attr">&quot;extensions&quot;</span>: [<span class="string">&quot;golang.Go&quot;</span>],</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Use &#x27;forwardPorts&#x27; to make a list of ports inside the container available locally.</span></span><br><span class="line">  <span class="comment">// &quot;forwardPorts&quot;: [],</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Use &#x27;postCreateCommand&#x27; to run commands after the container is created.</span></span><br><span class="line">  <span class="comment">// &quot;postCreateCommand&quot;: &quot;go version&quot;,</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.</span></span><br><span class="line">  <span class="attr">&quot;remoteUser&quot;</span>: <span class="string">&quot;vscode&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-修改Dockerfile"><a href="#4-修改Dockerfile" class="headerlink" title="4. 修改Dockerfile"></a>4. 修改<code>Dockerfile</code></h3><p>最后添加 <code>Expose 9090</code> 绑定端口</p>
+<h3 id="5-在容器中打开文件夹"><a href="#5-在容器中打开文件夹" class="headerlink" title="5. 在容器中打开文件夹"></a>5. 在容器中打开文件夹</h3><p><code>F1</code> 执行 <code>Open Folder in Container</code>,选择 <code>study.06</code>目录，此时<code>vscode</code>会编译并运行镜像，进入镜像中的环境。</p>
+<p><img src="/resource/85cbc4ef168343b6beccb7e49273986f.png" alt="6aac815f71728ea0548056b136af6619.png"></p>
+<p>执行 <code>go run .</code>，就可以在 <code>http://localhost:9090</code> 中看到结果了。</p>
+<h3 id="6-更新"><a href="#6-更新" class="headerlink" title="6. 更新"></a>6. 更新</h3><p>如果对<code>docker</code>文件进行任何修改后，可以执行 <code>F1</code> -&gt; <code>Rebuild 重新生成镜像</code>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/golang/" rel="tag"># golang</a>
+              <a href="/tags/vscode/" rel="tag"># vscode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/03/137ffe52017f4ca8ba4c4e9cfac60461/" rel="prev" title="wpf 绑定ListViewItem">
+      <i class="fa fa-chevron-left"></i> wpf 绑定ListViewItem
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#VSCode-%E4%BD%BF%E7%94%A8-docker-compose-%E8%BF%9B%E8%A1%8C-golang-%E5%BC%80%E5%8F%91"><span class="nav-number">1.</span> <span class="nav-text">VSCode 使用 docker-compose 进行 golang 开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#O-%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">O 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E5%89%8D%E7%BD%AE%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">一、 前置操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-vscode-%E7%95%A5"><span class="nav-number">1.2.1.</span> <span class="nav-text">安装 vscode 略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-golang-%E7%95%A5"><span class="nav-number">1.2.2.</span> <span class="nav-text">安装 golang 略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#golang-%E4%BD%BF%E7%94%A8-module-%E6%A8%A1%E5%BC%8F%E8%80%8C%E9%9D%9E-GOPATH-%E7%95%A5"><span class="nav-number">1.2.3.</span> <span class="nav-text">golang 使用 module 模式而非 GOPATH, 略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vscode-%E4%B8%AD%E5%AE%89%E8%A3%85-remote-containers-%E6%8F%92%E4%BB%B6%EF%BC%8C%E7%95%A5"><span class="nav-number">1.2.4.</span> <span class="nav-text">vscode 中安装 remote-containers 插件，略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%96%B0%E5%BB%BA-go-%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.3.</span> <span class="nav-text">二、新建 go 项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%B7%BB%E5%8A%A0-docker-compose-%E6%94%AF%E6%8C%81"><span class="nav-number">1.4.</span> <span class="nav-text">三、添加 docker-compose 支持</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. 添加模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8docker-compose"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. 使用docker-compose</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%BF%AE%E6%94%B9-devcontainer-json"><span class="nav-number">1.4.3.</span> <span class="nav-text">3. 修改 devcontainer.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%BF%AE%E6%94%B9Dockerfile"><span class="nav-number">1.4.4.</span> <span class="nav-text">4. 修改Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%9C%A8%E5%AE%B9%E5%99%A8%E4%B8%AD%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">1.4.5.</span> <span class="nav-text">5. 在容器中打开文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%9B%B4%E6%96%B0"><span class="nav-number">1.4.6.</span> <span class="nav-text">6. 更新</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhl</p>
+  <div class="site-description" itemprop="description">记录作者的一些历程，很杂乱，涉及很广...我也不知道我会什么</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">沪ICP备19006212号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhl</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '90ad172ea65d425400d8',
+      clientSecret: 'b6b9739426a1c602e3b41e513344a8ba7429e597',
+      repo        : 'ytianxia6.github.io',
+      owner       : 'ytianxia6',
+      admin       : ['ytianxia6'],
+      id          : '4907b763371b4d558c4527dbe4d37758',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
