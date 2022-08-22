@@ -208,9 +208,9 @@
 <h2 id="1-直接命令"><a href="#1-直接命令" class="headerlink" title="1. 直接命令"></a>1. 直接命令</h2><p>如文档中的 <code>HelloZW3DAPI</code> 命令，是一个直接命令，调用方式为 <code>~HelloZW3DAPI</code> ，调用后直接进入命令函数</p>
 <h2 id="2-先弹出对话框的命令"><a href="#2-先弹出对话框的命令" class="headerlink" title="2. 先弹出对话框的命令"></a>2. 先弹出对话框的命令</h2><p>如文档中的 <code>SetColor</code> 命令，先选择实体，再给实体设置颜色，调用方式为 <code>!SetColor</code> 。<br>这种命令的逻辑为</p>
 <ol>
-<li>调用对话框</li>
-<li>调用命令，将对话框 id 传给命令</li>
-<li>命令中可以通过对话框 id 获取对话框数据</li>
+<li> 调用对话框</li>
+<li> 调用命令，将对话框 id 传给命令</li>
+<li> 命令中可以通过对话框 id 获取对话框数据</li>
 </ol>
 <p>这恰恰与文档中第 5 节的内容，调用 ZW3D 命令 相呼应。<br>要模拟调用一个 ZW3D 命令，应当做的步骤是记录该命令执行过程中调用的对话框，设置的对话框数据，模拟这一过程。</p>
 <div style="display: none;">@%28zw3d%29%5Bposts%2Czw3d%5D%0A%0A%0A%23%20ZW3D%202019%20%u4E8C%u6B21%u5F00%u53D1%uFF08%u4E00%uFF09%0A%0A%23%20%u73AF%u5883%0A%0A%u4E0B%u8F7D%u5B89%u88C5%20%5B%u4E2D%u671B3D%5D%28https%3A//www.zwcad.com/download/%29%20%uFF0C%u5B89%u88C5%20Visual%20Studio%20%u3002%u4E0B%u8F7D%20%5B%u4E2D%u671B3D%20%u754C%u9762%u7F16%u8F91%u5DE5%u5177%5D%28http%3A//dl.zwsoft.com/zw3d/PC/ZW3D/Tech/API/ZW3D-UI-Designer.rar%29%u3002%0A%0ASDK%u5728ZW3D%u5B89%u88C5%u5305%u4E2D%uFF1A%0A%0A%5BInstallDIr%5Dzw3d.lib....................................................lib%u6587%u4EF6%0A%5BInstallDir%5Dapi%5CVxApi.h...............................................%u5934%u6587%u4EF6%0A%5BInstallDIr%5Dapi%5CZW3D%20API%20introduction.pdf%20.................%u5F00%u53D1%u6307%u5F15%20%0A%5BInstallDir%5Dapi%5CApiDoc.zip..........................................%u5F00%u53D1%u6587%u6863%0A%5BInstallDir%5Dapi%5CApiExample.zip..................................%u793A%u4F8B%0A%0A%0A%23%20%u7B2C%u4E00%u6B65%0A%0A%u7B2C%u4E00%u6B65%uFF0C%u6309%u7167%20ZW3D%20API%20introduction.pdf%20%u8FDB%u884C%u5B66%u4E60%uFF0C%u5B8C%u6210%20%u7B2C1%u30012%u30013%u30014%u30015%u30016%20%u8282%u3002%0A%u5176%u4E2D%u6709%u4E9B%u95EE%u9898%u9700%u8981%u6CE8%u610F%uFF1A%0A%0A%23%23%201.%20%20%u5982%u679C%u4F7F%u7528%20Visual%20Studio%202017%u53CA%u4EE5%u4E0A%u7248%u672C%uFF0C%u4F1A%u9047%u5230%u9519%u8BEF%20C2664%0A%20%60error%20C2664%3A%20%u201Cvoid%20cvxMsgDisp%28char%20*%29%u201D%3A%20%u65E0%u6CD5%u5C06%u53C2%u6570%201%20%u4ECE%u201Cconst%20char%20%5B16%5D%u201D%u8F6C%u6362%u4E3A%u201Cchar%20*%u201D%60%0A%0A%23%23%u9519%u8BEF%u539F%u56E0%uFF1A%23%23%20%0A%u53C2%u7167%5Bmsdn%5D%28https%3A//docs.microsoft.com/en-us/cpp/build/reference/zc-strictstrings-disable-string-literal-type-conversion%3Fview%3Dvs-2019%29%0Azw3d%u7684%u5F88%u591A%u63A5%u53E3%u53C2%u6570%u7C7B%u578B%u4E3A%20%60char*%60%uFF0C%u8FD9%u53EF%u80FD%u5BFC%u81F4%u5BF9%u9759%u6001%u5B57%u7B26%u4E32%u7684%u66F4%u6539%u3002%0A%0A%23%23%20%u89E3%u51B3%u65B9%u6848%uFF1A%0A%u5DE5%u7A0B%u5C5E%u6027%20--%20c/c++%20--%20%u8BED%u8A00%20--%20%u7B26%u5408%u6A21%u5F0F%20%u8BBE%u4E3A%20%u5426%0A%21%5BAlt%20text%5D%28./1562311629934.png%29%0A%0A%23%23%202.%20%u547D%u4EE4%u5BF9%u8BDD%u6846%u53EF%u80FD%u663E%u793A%u4E0D%u51FA%u6765%0A%0A%u5728%u4F7F%u7528%20zw3d%u754C%u9762%u7F16%u8F91%u5DE5%u5177%u7F16%u8F91%u5BF9%u8BDD%u6846%u540E%uFF0C%u5982%u679C%u5BF9%u8BDD%u6846%u65E0%u6CD5%u663E%u793A%uFF0C%u53EF%u80FD%u662F%u5BF9%u8BDD%u6846%u5E03%u5C40%u6709%u95EE%u9898%uFF0C%u9700%u8981%u8FDB%u884C%u4EE5%u4E0B%u8C03%u6574%uFF1A%0A%0A%u5728%u53F3%u4FA7%u5BF9%u8C61%u6811%u4E2D%u9009%u4E2D%20drawbackBoxGroup%20%uFF0C%u53F3%u952E%20Layout-%3E%20Lay%20Out%20Horizontally%u3002%uFF08%u5982%u679C%u4E0D%u53EF%u9009%uFF0C%u9700%u8981%u5148%u5C06%u4E4B%u524D%u7684%u7F16%u7EC4%20Break%20Layout%29%20%u3002%0A%21%5BAlt%20text%5D%28./1562311993010.png%29%0A%u8FD9%u91CC%u4E0E%u6587%u6863%u6240%u8FF0%u4E0D%u592A%u4E00%u6837%uFF0C%u4E0D%u80FD%u53EA%u9009%u4E2D%u81EA%u5DF1%u6DFB%u52A0%u7684%u63A7%u4EF6%u8FDB%u884C%20Layout%uFF0C%u800C%u662F%u8981%u8DDF%20GroupBox%20%u7F16%u5728%u4E00%u8D77%u3002%0A%0A%u5176%u5B83%u7684%u53C2%u7167%u6587%u6863%u5373%u53EF%u3002%0A%0A%0A%23%20%u547D%u4EE4%u673A%u5236%0A%0AZW3D%20%u6709%u4E24%u79CD%u547D%u4EE4%uFF0C%u76F4%u63A5%u6267%u884C%u7684%u547D%u4EE4%u548C%u5148%u5F39%u51FA%u547D%u4EE4%u5BF9%u8BDD%u6846%u7684%u547D%u4EE4%u3002%0A%0A%23%23%201.%20%u76F4%u63A5%u547D%u4EE4%0A%u5982%u6587%u6863%u4E2D%u7684%20%60HelloZW3DAPI%60%20%u547D%u4EE4%uFF0C%u662F%u4E00%u4E2A%u76F4%u63A5%u547D%u4EE4%uFF0C%u8C03%u7528%u65B9%u5F0F%u4E3A%20%60%7EHelloZW3DAPI%60%20%uFF0C%u8C03%u7528%u540E%u76F4%u63A5%u8FDB%u5165%u547D%u4EE4%u51FD%u6570%0A%0A%23%23%202.%20%u5148%u5F39%u51FA%u5BF9%u8BDD%u6846%u7684%u547D%u4EE4%0A%0A%u5982%u6587%u6863%u4E2D%u7684%20%60SetColor%60%20%u547D%u4EE4%uFF0C%u5148%u9009%u62E9%u5B9E%u4F53%uFF0C%u518D%u7ED9%u5B9E%u4F53%u8BBE%u7F6E%u989C%u8272%uFF0C%u8C03%u7528%u65B9%u5F0F%u4E3A%20%60%21SetColor%60%20%u3002%0A%0A%u8FD9%u79CD%u547D%u4EE4%u7684%u903B%u8F91%u4E3A%20%0A1.%20%u8C03%u7528%u5BF9%u8BDD%u6846%0A2.%20%u8C03%u7528%u547D%u4EE4%uFF0C%u5C06%u5BF9%u8BDD%u6846id%u4F20%u7ED9%u547D%u4EE4%0A3.%20%u547D%u4EE4%u4E2D%u53EF%u4EE5%u901A%u8FC7%u5BF9%u8BDD%u6846id%20%u83B7%u53D6%u5BF9%u8BDD%u6846%u6570%u636E%0A%0A%u8FD9%u6070%u6070%u4E0E%u6587%u6863%u4E2D%u7B2C5%u8282%u7684%u5185%u5BB9%uFF0C%u8C03%u7528%20ZW3D%u547D%u4EE4%20%u76F8%u547C%u5E94%u3002%0A%u8981%u6A21%u62DF%u8C03%u7528%u4E00%u4E2AZW3D%u547D%u4EE4%uFF0C%u5E94%u5F53%u505A%u7684%u6B65%u9AA4%u662F%u8BB0%u5F55%u8BE5%u547D%u4EE4%u6267%u884C%u8FC7%u7A0B%u4E2D%u8C03%u7528%u7684%u5BF9%u8BDD%u6846%uFF0C%u8BBE%u7F6E%u7684%u5BF9%u8BDD%u6846%u6570%u636E%uFF0C%u6A21%u62DF%u8FD9%u4E00%u8FC7%u7A0B%u3002%0A%0A%0A</div>
@@ -532,42 +532,42 @@
 <p>现有一个非常之庞大（大的过分）的 git 仓库，包含了 N 多个项目的源码，项目各个阶段的文档，原型等。对于新用户来说，clone 一次需要很长时间（网速也是槽点）。因此决定将原仓库拆分，将源码子目录作为一个新的仓库，并且需要保留和子目录相关的 log 记录。</p>
 <p>一．前期准备<br>所有的命令在 Git-shell 中进行</p>
 <ol>
-<li>原仓库在本地的目录结构如下图：</li>
+<li> 原仓库在本地的目录结构如下图：</li>
 </ol>
 <p>1524103977(1).png (10.27 KB, 下载次数: 0)</p>
 <p>下载附件   保存到相册</p>
 <p>1  小时前 上传</p>
 <ol start="2">
-<li>描述约定</li>
+<li> 描述约定</li>
 </ol>
 <p>为了更好的描述命令，先定义一下命令中占位符的意义<br>原仓库：<old-repo><br>新仓库：<new-repo><br>想要分离出来的子文件夹名称： <name-of-folder><br>新的远端地址：<new-git-url><br>注意：如果你在使用 Windows，且该文件夹深度 &gt; 1，你必须使用斜杠   / 作为目录分隔符而不是默认的反斜杠 <br>二．迁移（使用 filter-branch 命令）</p>
 <p>由于我需要迁移的子目录包含中文名，因此需要使用 filter-branch 命令来实现迁移，当然，如果不包含中文的目录也可以使用 git1.8 版本以后的 subtree 来实现，该方法稍后说明。</p>
 <ol>
-<li>首先，clone 一份原仓库并删掉原来的 remote：（依次执行以下命令）</li>
+<li> 首先，clone 一份原仓库并删掉原来的 remote：（依次执行以下命令）</li>
 </ol>
 <p>（1）git clone <big-repo>  <new-repo><br>（2）cd <new-repo><br>（3）git remote rm origin</p>
 <ol start="2">
-<li>然后运行如下命令（这是重点）：</li>
+<li> 然后运行如下命令（这是重点）：</li>
 </ol>
 <p>（1）git filter-branch –tag-name-filter cat –prune-empty –subdirectory-filter <name-of-folder> – –all</p>
 <p>这条命令同样会过滤所有历史提交，只保留所有对指定子目录有影响的提交，并将该子目录设为该仓库的根目录。这里说明各下个参数的作用：<br>--tag-name-filter 该参数控制我们要如何处理旧的 tag，cat 即表示原样输出；<br>--prune-empty 删除空的（对子目录没有影响的）提交；<br>--subdirectory-filter 指定子目录路径；<br>-- –all 该参数必须跟在   – 后面，表示对所有分支进行操作。如果你只想保存当前分支，也可以不添加此参数。</p>
 <ol start="3">
-<li>清理.git 的 object</li>
+<li> 清理.git 的 object</li>
 </ol>
 <p>当上述命令执行完毕后，就可以看到本地的新仓库已经是原仓库子目录中的内容了，且保留了关于该子目录所有的提交历史。不过只是这样的话新仓库中的<br>.git 目录里还是保存有不少无用的 object，我们需要将其清除掉以减小新仓库的体积（如果你用 subtree 的方法的话是不需要执行这一步的）。<br>依次执行以下命令：<br>（1）git reset –hard</p>
 <p>（2）git for-each-ref –format=”%(refname)” refs/original/ |xargs -n 1 git update-ref -d</p>
 <p>（3）git reflog expire –expire=now –all<br>（4）git gc –aggressive –prune=now</p>
 <ol start="4">
-<li>将新的本地仓库推送到远端</li>
+<li> 将新的本地仓库推送到远端</li>
 </ol>
 <p>cd 到<new-repo><br>（1）添加远端地址:<br>                git remote add origin <new-git-url><br>（2）推送到远端：<br>                git push -u origin master</p>
 <p>特别注意：如果当前远端库是空的话，上述命令是好使的，由于我开始手贱，已经在新的 git 地址 clone 到本地，并且还新建了一个测试文件夹，因此导致新的 git 仓库的 master 不再是最新的了。因此可以先提交到 dev 分支：git push origin master:dev</p>
 <ol start="5">
-<li>合并 dev 到 master（可选）</li>
+<li> 合并 dev 到 master（可选）</li>
 </ol>
 <p>如果第 4 步已经直接推动到 master 了。第 5 步可忽略。<br>（1）首先将本地 dev 合并到本地 master<br>        ① 切换到 master 分支<br>        ②git merge origan/dev –allow-unrelated-histories<br>由于是第一次合并，因此需要加上–allow-unrelated-histories，允许两个没有关联的历史合并在一起。后续的合并就不需要了。<br>（2）将本地 master push 到远端<br>（3）<br>至此，使用 filter-branch 方式拆分 git 库已经完成。有木有心动，去试试吧。<br>三．补充 subtree 方式迁移<br>要求拆分的目录没有中文名 1.首先，进入<big-repo> 所在的目录，创建一个<name-of-new-branch>的临时分支，运行：<br>git subtree split -P <name-of-folder> -b <name-of-new-branch></p>
 <ol start="2">
-<li>然后，我们创建一个新的 git 仓库：</li>
+<li> 然后，我们创建一个新的 git 仓库：</li>
 </ol>
 <p>（1）mkdir  <new-repo><br>（2）git init<br>3. 接着把原仓库中的临时分支拉到新仓库中：<br>git pull &lt;/path/to/big-repo&gt;  <name-of-new-branch></p>
 <h2 id="好了，完成。现在看看你的新仓库，是不是已经包含了原子文件夹中的所有文件和你之前在原仓库中的所有提交历史呢？后续步骤就可参照第二章中的-3-4-5-步了。-xA-虽然网上一搜一大堆，还是希望能帮助有需要的同学，至少可以避免我踩过的坑了。-xA-参考：https-blessing-studio-splitting-a-subfolder-out-into-a-new-git-repository"><a href="#好了，完成。现在看看你的新仓库，是不是已经包含了原子文件夹中的所有文件和你之前在原仓库中的所有提交历史呢？后续步骤就可参照第二章中的-3-4-5-步了。-xA-虽然网上一搜一大堆，还是希望能帮助有需要的同学，至少可以避免我踩过的坑了。-xA-参考：https-blessing-studio-splitting-a-subfolder-out-into-a-new-git-repository" class="headerlink" title="好了，完成。现在看看你的新仓库，是不是已经包含了原子文件夹中的所有文件和你之前在原仓库中的所有提交历史呢？后续步骤就可参照第二章中的 3,4,5 步了。&#xA;虽然网上一搜一大堆，还是希望能帮助有需要的同学，至少可以避免我踩过的坑了。&#xA;参考：https://blessing.studio/splitting-a-subfolder-out-into-a-new-git-repository/"></a>好了，完成。现在看看你的新仓库，是不是已经包含了原子文件夹中的所有文件和你之前在原仓库中的所有提交历史呢？后续步骤就可参照第二章中的 3,4,5 步了。&#xA;虽然网上一搜一大堆，还是希望能帮助有需要的同学，至少可以避免我踩过的坑了。&#xA;参考：<a target="_blank" rel="noopener" href="https://blessing.studio/splitting-a-subfolder-out-into-a-new-git-repository/">https://blessing.studio/splitting-a-subfolder-out-into-a-new-git-repository/</a></h2><p>作者：天空神话<br>来源：CSDN<br>原文：<a target="_blank" rel="noopener" href="https://blog.csdn.net/wang252949/article/details/80003791">https://blog.csdn.net/wang252949/article/details/80003791</a><br>版权声明：本文为博主原创文章，转载请附上博文链接！</p>
@@ -785,7 +785,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><strong>posts</strong></p>
+          <h1 id="2019-4-8-Redmine-开发环境搭建"><a href="#2019-4-8-Redmine-开发环境搭建" class="headerlink" title="2019-4-8 Redmine 开发环境搭建"></a>2019-4-8 Redmine 开发环境搭建</h1><p><strong>posts</strong></p>
 <h1 id="Redmine-开发环境搭建"><a href="#Redmine-开发环境搭建" class="headerlink" title="Redmine 开发环境搭建"></a>Redmine 开发环境搭建</h1><h1 id="1-系统"><a href="#1-系统" class="headerlink" title="1. 系统"></a>1. 系统</h1><p>win10 系统</p>
 <h1 id="2-下载安装-redmine"><a href="#2-下载安装-redmine" class="headerlink" title="2. 下载安装 redmine"></a>2. 下载安装 redmine</h1><p>使用 <a target="_blank" rel="noopener" href="https://bitnami.com/stack/redmine">bitnami redmine</a> 选择 windows 版本直接下载，运行 exe 进行本地安装。</p>
 <p><img src="/resource/773b0cf970fc9214ca2d85c7b10644b7." alt="1554709086384.png"><br><img src="/resource/a9caf862a32e9b6662f0348b18370ab8." alt="1554709115330.png"><br><img src="/resource/12bf8b6f7aaa8e719898d72bfa5269f8." alt="1554709131749.png"><br>安装：<br><img src="/resource/d8830914832362721c28d15d0d9cb917." alt="1554709146630.png"><br><img src="/resource/005972282e4f7769b3c7c408097226b6." alt="1554709180645.png"><br><img src="/resource/4d88b99987e674bfbe649fda449d37ab." alt="1554709191141.png"><br><img src="/resource/dd2ace98aa0f3af200123a8f2825c46c." alt="1554709206259.png"><br><img src="/resource/9ca32a41ab536248d555440186e6bb76." alt="1554709221395.png"></p>
@@ -870,15 +870,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><strong>posts</strong>** 软考**** 软件设计师**** 数据结构**</p>
+          <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><p><strong>posts</strong>** 软考**** 软件设计师**** 数据结构**</p>
 <h1 id="一、数据结构"><a href="#一、数据结构" class="headerlink" title="一、数据结构"></a>一、数据结构</h1><h1 id="二、数学知识"><a href="#二、数学知识" class="headerlink" title="二、数学知识"></a>二、数学知识</h1><p>看了一下数据结构一章，发现不管是数据结构还是算法，都需要数学知识为基础。<br>先整理一下相关的数学知识<br>##求和<br>连加：<br><img src="/resource/45566382459904e49de8dc83711bede3." alt="d71b67888eee5dca42a10cc2c04fa0dd.png"></p>
 <p>求和<br><img src="/resource/bce6123efa16fc50100a3cd0853353a6." alt="d1e0bc3498c58794c7b77bb035a23370.png"></p>
 <h1 id="三、线性结构"><a href="#三、线性结构" class="headerlink" title="三、线性结构"></a>三、线性结构</h1><p>线性结构非空时</p>
 <ol>
-<li>只有一个第一个元素</li>
-<li>只有一个最后一个元素</li>
-<li>非头元素只有一个直接前驱</li>
-<li>非最后一个元素只有一个直接后继</li>
+<li> 只有一个第一个元素</li>
+<li> 只有一个最后一个元素</li>
+<li> 非头元素只有一个直接前驱</li>
+<li> 非最后一个元素只有一个直接后继</li>
 </ol>
 <h2 id="1-顺序存储"><a href="#1-顺序存储" class="headerlink" title="1. 顺序存储"></a>1. 顺序存储</h2><p>存储结构也是顺序存储。<br>对元素进行插入时，平均移动元素个数为</p>
 <p><img src="/resource/c635f0b9c4b9ff6a03e30383a3faed26." alt="8a1d9c686db09bdb894c7da52a70cd40.png"></p>
@@ -894,36 +894,36 @@
 <h1 id="五、图"><a href="#五、图" class="headerlink" title="五、图"></a>五、图</h1><p><img src="/resource/a7b430fd1ab58c687596e46cb6496c09." alt="71bd6567833f450688432818ef008b48.png"><br>带有权值的图称为网</p>
 <h2 id="1-有向图，无向图"><a href="#1-有向图，无向图" class="headerlink" title="1. 有向图，无向图"></a>1. 有向图，无向图</h2><p>连通<br>连通图，强连通图<br>连通分量，强连通分量</p>
 <h2 id="2-网"><a href="#2-网" class="headerlink" title="2. 网"></a>2. 网</h2><h2 id="3-搜索"><a href="#3-搜索" class="headerlink" title="3. 搜索"></a>3. 搜索</h2><ol>
-<li>深度优先搜索， 通常使用递归</li>
-<li>广度优先搜索，使用队列</li>
+<li> 深度优先搜索， 通常使用递归</li>
+<li> 广度优先搜索，使用队列</li>
 </ol>
 <h2 id="4-生成树"><a href="#4-生成树" class="headerlink" title="4. 生成树"></a>4. 生成树</h2><p>生成树、最小生成树</p>
 <h2 id="5-AOV-网，AOE-网"><a href="#5-AOV-网，AOE-网" class="headerlink" title="5. AOV 网，AOE 网"></a>5. AOV 网，AOE 网</h2><p>AOV 网顶点表示活动，边表示活动的先后。<br>AOE 网顶点表示事件，边表示活动，边上的权值表示活动所需要的时间，常用来评估项目的完成时间。<br>其中几个比较关键的概念：</p>
 <ol>
-<li>顶点事件的最早开始时间</li>
+<li> 顶点事件的最早开始时间</li>
 </ol>
 <p><img src="/resource/3b0a2569662c6a4c16853cad8cc282f5." alt="d1fbe06763d8b42e5f231c224f592f25.png"></p>
 <ol>
-<li>顶点事件的最晚开始时间</li>
+<li> 顶点事件的最晚开始时间</li>
 </ol>
 <p><img src="/resource/c87a2b6f8e7eb422839372216ddf0fff." alt="0a730998db73cf775f93215109ae2c16.png"></p>
 <ol>
-<li>活动<img src="/resource/7d30a3b23ce5b399340e53c8d15e5ab9." alt="5a02cc32acbc74ac7814a4caf2e4bd0f.png">的最早开始时间</li>
+<li> 活动<img src="/resource/7d30a3b23ce5b399340e53c8d15e5ab9." alt="5a02cc32acbc74ac7814a4caf2e4bd0f.png">的最早开始时间</li>
 </ol>
 <p><img src="/resource/c3615a5a710465afc17fa643108c095e." alt="e44fbfc36c3f02e67d4cc7678a82c179.png"></p>
 <ol start="2">
-<li>活动<img src="/resource/9812f14d8c033121d8d6b58c05c91090." alt="c09009f27980490bdccb886228ba3935.png">的最晚开始时间， <img src="/resource/9812f14d8c033121d8d6b58c05c91090." alt="c09009f27980490bdccb886228ba3935.png"> 对应弧 &lt;i,j&gt;</li>
+<li> 活动<img src="/resource/9812f14d8c033121d8d6b58c05c91090." alt="c09009f27980490bdccb886228ba3935.png">的最晚开始时间， <img src="/resource/9812f14d8c033121d8d6b58c05c91090." alt="c09009f27980490bdccb886228ba3935.png"> 对应弧 &lt;i,j&gt;</li>
 </ol>
 <p><img src="/resource/6ca0fe4129d1b5864f018c61be7537f7." alt="ebe8858b62ba76e7d5d284754ea94cd3.png"></p>
 <p>当 <img src="/resource/763fc2b4dca33f8dade57f0d1d3d3d63." alt="50d7fcad3cccb48d18175a233afcb2a8.png"> 时，为关键路径。</p>
 <h2 id="6-拓朴排序"><a href="#6-拓朴排序" class="headerlink" title="6. 拓朴排序"></a>6. 拓朴排序</h2><p>有向无环图可以拓补排序，方法是：</p>
 <ol>
-<li>取出入度为 0 的点，移除与之相连的边</li>
-<li>重复 1</li>
+<li> 取出入度为 0 的点，移除与之相连的边</li>
+<li> 重复 1</li>
 </ol>
 <p>到找不到入度为 0 的点且没有剩余点时，全部拓朴排序，否则存在环。</p>
 <h2 id="7-最短路径"><a href="#7-最短路径" class="headerlink" title="7. 最短路径"></a>7. 最短路径</h2><ol>
-<li>单源点最短路径</li>
+<li> 单源点最短路径</li>
 </ol>
 <p>取集合<img src="/resource/af15d86f3234ae49860f93c5f4b7f0d0." alt="7c57db2e74f36b05e30f40e784dec069.png"> ，初始时，S 中只有 <img src="/resource/8c184f2ab58239bfa2590a066b48edb0." alt="4de30fa23af2b0f357cc60996666b365.png">， <img src="/resource/f8c2c07507a43842101946e2ca4aaf97." alt="26b493c402b79ba2d0e9b242593b4152.png">中为剩余顶点。<img src="/resource/8c038d29c707cfcc4868f98772350f15." alt="58b9ccfa6d56570063f496d56ff1daf4.png">到<img src="/resource/f8c2c07507a43842101946e2ca4aaf97." alt="26b493c402b79ba2d0e9b242593b4152.png">中所有元素的最短路径。</p>
 <p>取出最短的顶点，加入<img src="/resource/8c038d29c707cfcc4868f98772350f15." alt="58b9ccfa6d56570063f496d56ff1daf4.png">，更新<img src="/resource/f8c2c07507a43842101946e2ca4aaf97." alt="26b493c402b79ba2d0e9b242593b4152.png">中剩余元素的最短路径。</p>
