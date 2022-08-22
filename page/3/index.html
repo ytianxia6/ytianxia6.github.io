@@ -197,8 +197,8 @@
 
 <h1 id="枚举显示"><a href="#枚举显示" class="headerlink" title="枚举显示"></a>枚举显示</h1><p>枚举显示有两个方案，</p>
 <ol>
-<li> 转换器， 在 xaml 中定义一个转换器资源</li>
-<li> 定义一个用来显示的字符串属性，界面绑定这个字符串属性。</li>
+<li>转换器， 在 xaml 中定义一个转换器资源</li>
+<li>定义一个用来显示的字符串属性，界面绑定这个字符串属性。</li>
 </ol>
 <h1 id="读取-DataGrid-某一行某一列的值"><a href="#读取-DataGrid-某一行某一列的值" class="headerlink" title="读取 DataGrid 某一行某一列的值"></a>读取 DataGrid 某一行某一列的值</h1><p>从控件 <a target="_blank" rel="noopener" href="https://github.com/tom-englert/DataGridExtensions">DataGridExtensions</a> 中学习到的。拿到的是真实的绑定对象，而不是显示的字符串。一开始用 <code>GetCelllContent()</code>，但对未显示的行无法取到。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">class GetCellValueClass : DependencyObject</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line"></span><br><span class="line">    /// Identifies the CellValue dependency property, a private helper property used to evaluate the property path for the list items.</span><br><span class="line"></span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line"></span><br><span class="line">    private static readonly DependencyProperty _cellValueProperty =</span><br><span class="line"></span><br><span class="line">        DependencyProperty.Register(&quot;_cellValue&quot;, typeof(object), typeof(GetCellValueClass));</span><br><span class="line"></span><br><span class="line">    public object GetCellValue(DataGridColumn col, object item)</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        var propertyPath = col.SortMemberPath;</span><br><span class="line"></span><br><span class="line">        if (string.IsNullOrEmpty(propertyPath))</span><br><span class="line"></span><br><span class="line">            return null;</span><br><span class="line"></span><br><span class="line">        BindingOperations.SetBinding(this, _cellValueProperty, new Binding(propertyPath) &#123; Source = item &#125;);</span><br><span class="line"></span><br><span class="line">        var propertyValue = GetValue(_cellValueProperty);</span><br><span class="line"></span><br><span class="line">        BindingOperations.ClearBinding(this, _cellValueProperty);</span><br><span class="line"></span><br><span class="line">        return propertyValue;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -263,12 +263,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="程序语言基础知识"><a href="#程序语言基础知识" class="headerlink" title="程序语言基础知识"></a>程序语言基础知识</h1><p>第二章，程序语言基础知识，也太过基础了。<br>程序语言分类：</p>
+          <p>第二章，程序语言基础知识，也太过基础了。<br>程序语言分类：</p>
 <ol>
-<li> <strong>命令式语言</strong> 如 机器语言、汇编、C</li>
-<li> <strong>面向对象语言</strong> 如 c++/java</li>
-<li> <strong>函数式语言</strong> 如 lisp, python</li>
-<li> <strong>逻辑型语言</strong> 只有一个，叫<strong>Prolog</strong></li>
+<li><strong>命令式语言</strong> 如 机器语言、汇编、C</li>
+<li><strong>面向对象语言</strong> 如 c++/java</li>
+<li><strong>函数式语言</strong> 如 lisp, python</li>
+<li><strong>逻辑型语言</strong> 只有一个，叫<strong>Prolog</strong></li>
 </ol>
 <p>有汇编程序、解释程序、编译程序。<br><strong>汇编程序</strong>将汇编语言源程序汇编为机器语言直接执行。<br><strong>解释程序</strong>通过 <em>词法分析_、 <em>语法分析_、_语义分析</em> 、_生成中间代码</em> 几步后，生成中间代码，直接解释执行。</p>
 <p><strong>编译程序</strong> 通过 <em>词法分析_、_语法分析_、_语义分析_、_生成中间代码_、_程序优化_、_生成目标程序</em> 6 步后，生成可执行的目标程序。这中间会产生符号表，有些符号表一直到运行时还在起作用。</p>
@@ -411,33 +411,33 @@
 </blockquote>
 <p>思路：</p>
 <ol>
-<li> 单精度浮点数 阶符 1 位，阶码 8 位， 尾数 23 位。</li>
-<li> 转换为 2 进制表示</li>
+<li>单精度浮点数 阶符 1 位，阶码 8 位， 尾数 23 位。</li>
+<li>转换为 2 进制表示</li>
 </ol>
 <p>s</p>
 <ol start="3">
-<li> 正数转换为 s</li>
+<li>正数转换为 s</li>
 </ol>
 <p>s</p>
 <ol>
-<li> 去除 b0,扩展为 23 位，为 s</li>
-<li> 用 9 位移码表示 7，为 s</li>
-<li> 连起来则是 s</li>
+<li>去除 b0,扩展为 23 位，为 s</li>
+<li>用 9 位移码表示 7，为 s</li>
+<li>连起来则是 s</li>
 </ol>
 <blockquote>
 <p>内存按字节编址，从 &gt; s&gt; 到 &gt; s&gt; 区域的存储容量是多少？</p>
 </blockquote>
 <ol>
-<li> 从 s 到 s 表示的地址数量为 s，</li>
-<li> s</li>
-<li> 容量是 s，即 s</li>
+<li>从 s 到 s 表示的地址数量为 s，</li>
+<li>s</li>
+<li>容量是 s，即 s</li>
 </ol>
 <blockquote>
 <p>总线宽度为 32bit，时针频率为 200MHz， 若总线上每 5 个时钟周期传送一个 32bit 的字，则该总线的带宽是 __ M/s</p>
 </blockquote>
 <ol>
-<li> 时针频率为 200MHz，则表示 1s 有 200M / 5 = 40M 次，每次 32bit，则带宽为 s</li>
-<li> 一个 32 bit 的字，是 4 个字节。所以 1280M/s 的字是 160 MB/s</li>
+<li>时针频率为 200MHz，则表示 1s 有 200M / 5 = 40M 次，每次 32bit，则带宽为 s</li>
+<li>一个 32 bit 的字，是 4 个字节。所以 1280M/s 的字是 160 MB/s</li>
 </ol>
 <p>这道题我对字和字节的概率有些模糊。<br>一个字应该是两个字节、4 个字节组成，重新审题看看。这里的一个字，就是 32bit, 4 个字节。bit 就是位，byte 是字节。</p>
 <blockquote>
@@ -519,10 +519,10 @@
 <p>数据字典<br>词条<br>数据项条目，数据流条目，文件条目，加工条目</p>
 <p>数据流图基本原则 ：</p>
 <ol>
-<li> 数据实体之间不能有数据流（外部实体之间，存储之间，外部实体和存储之间）</li>
-<li> 数据流经过加工不能完全相同（守恒）</li>
-<li> 加工必须有进有出</li>
-<li> 父图和子图守恒</li>
+<li>数据实体之间不能有数据流（外部实体之间，存储之间，外部实体和存储之间）</li>
+<li>数据流经过加工不能完全相同（守恒）</li>
+<li>加工必须有进有出</li>
+<li>父图和子图守恒</li>
 <li></li>
 </ol>
 <p>数据流感觉比较简单，看完一节课的视频，感觉已经没什么问题了，主要在认真审题和掌握基本原则。题中每句话都代表了一个数据流或一个数据节点。</p>
@@ -590,7 +590,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="docker-安装-redmine"><a href="#docker-安装-redmine" class="headerlink" title="docker 安装 redmine"></a>docker 安装 redmine</h1><p>docker 安装 redmine ，使用官方插件，一开始还比较顺，按教程走即可。<br>但随着应用越来越复杂，就不行了。特别是插件的安装。<br>这里主要解决安装插件时遇到的问题</p>
+          <p>docker 安装 redmine ，使用官方插件，一开始还比较顺，按教程走即可。<br>但随着应用越来越复杂，就不行了。特别是插件的安装。<br>这里主要解决安装插件时遇到的问题</p>
 <h2 id="Usability-插件"><a href="#Usability-插件" class="headerlink" title="Usability 插件"></a><a target="_blank" rel="noopener" href="http://rmplus.pro/en/redmine/plugins/usability">Usability 插件</a></h2><p>这个插件与 <a target="_blank" rel="noopener" href="https://www.redmine.org/plugins/redmine_work_time">work-time</a> 和 <a target="_blank" rel="noopener" href="https://www.redmine.org/plugins/redmine_code_review">code_review</a> 冲突，</p>
 <h3 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h3><p>修改这两个插件的 lib/xx_projects_helper_patch.rb 文件，将 <code>def project_settings_tabs</code> 改为 <code>def project_settings_tabs_without_usability</code></p>
 <div style="display: none;">%23%20docker%20%E5%AE%89%E8%A3%85%20redmine%0A%0Adocker%20%E5%AE%89%E8%A3%85redmine%20%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%AE%98%E6%96%B9%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%B8%80%E5%BC%80%E5%A7%8B%E8%BF%98%E6%AF%94%E8%BE%83%E9%A1%BA%EF%BC%8C%E6%8C%89%E6%95%99%E7%A8%8B%E8%B5%B0%E5%8D%B3%E5%8F%AF%E3%80%82%0A%0A%E4%BD%86%E9%9A%8F%E7%9D%80%E5%BA%94%E7%94%A8%E8%B6%8A%E6%9D%A5%E8%B6%8A%E5%A4%8D%E6%9D%82%EF%BC%8C%E5%B0%B1%E4%B8%8D%E8%A1%8C%E4%BA%86%E3%80%82%E7%89%B9%E5%88%AB%E6%98%AF%E6%8F%92%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%E3%80%82%0A%0A%E8%BF%99%E9%87%8C%E4%B8%BB%E8%A6%81%E8%A7%A3%E5%86%B3%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%0A%0A%23%23%20%20%5BUsability%20%E6%8F%92%E4%BB%B6%5D(http%3A%2F%2Frmplus.pro%2Fen%2Fredmine%2Fplugins%2Fusability)%0A%0A%0A%E8%BF%99%E4%B8%AA%E6%8F%92%E4%BB%B6%E4%B8%8E%20%5Bwork-time%5D(https%3A%2F%2Fwww.redmine.org%2Fplugins%2Fredmine_work_time)%20%E5%92%8C%20%5Bcode_review%5D(https%3A%2F%2Fwww.redmine.org%2Fplugins%2Fredmine_code_review)%20%E5%86%B2%E7%AA%81%EF%BC%8C%0A%0A%23%23%23%20%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%9A%0A%0A%E4%BF%AE%E6%94%B9%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%8F%92%E4%BB%B6%E7%9A%84%20lib%2Fxx_projects_helper_patch.rb%20%E6%96%87%E4%BB%B6%EF%BC%8C%E5%B0%86%20%60%20def%20project_settings_tabs%60%20%E6%94%B9%E4%B8%BA%20%60def%20project_settings_tabs_without_usability%60%0A%0A</div>
@@ -715,7 +715,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="docker-安装-ProGet"><a href="#docker-安装-ProGet" class="headerlink" title="docker 安装 ProGet"></a>docker 安装 ProGet</h1><p>尝试安装一个内部使用的 Nuget 服务器，第一选项是 Nuget Server，但需要 iis, 于是考虑安装一个 ProGet</p>
+          <p>尝试安装一个内部使用的 Nuget 服务器，第一选项是 Nuget Server，但需要 iis, 于是考虑安装一个 ProGet</p>
 <p>安装很简单，<a target="_blank" rel="noopener" href="https://hub.docker.com/r/inedo/proget">docker 镜像</a>， <a target="_blank" rel="noopener" href="https://github.com/Inedo/proget-docker/blob/master/docker-compose.yml">docker-compose</a> 模板都有，可以直接拿来使用。</p>
 <p>但因为以下问题最终放弃。</p>
 <h2 id="不支持反向代理目录"><a href="#不支持反向代理目录" class="headerlink" title="不支持反向代理目录"></a>不支持反向代理目录</h2><p>我想要设为 <a target="_blank" rel="noopener" href="http://xxx.com/nuget">http://xxx.com/nuget</a> ,但不支持，官网说必须安装在 root 根目录。<br>官方论坛： <a target="_blank" rel="noopener" href="https://inedo.com/support/questions/6999">https://inedo.com/support/questions/6999</a></p>
@@ -856,7 +856,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="迁移-svn-到-git"><a href="#迁移-svn-到-git" class="headerlink" title="迁移 svn 到 git"></a>迁移 svn 到 git</h1><p>要迁移 svn 到 git ,遇到了很多问题，所幸后来一一解决了。</p>
+          <p>要迁移 svn 到 git ,遇到了很多问题，所幸后来一一解决了。</p>
 <p>没有使用迁移工具 subgit，而是按照<a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v1/Git-%E4%B8%8E%E5%85%B6%E4%BB%96%E7%B3%BB%E7%BB%9F-%E8%BF%81%E7%A7%BB%E5%88%B0-Git">官网</a>的步骤来做的。</p>
 <h1 id="一-调用-git-svn-clone-时卡在初始化空的-git-库。"><a href="#一-调用-git-svn-clone-时卡在初始化空的-git-库。" class="headerlink" title="一. 调用 git svn clone 时卡在初始化空的 git 库。"></a>一. 调用 git svn clone 时卡在初始化空的 git 库。</h1><p><code>Initialized empty Git repository in xxx/.git/</code></p>
 <h2 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h2><p>svn 库版本太高，我使用的是 visual svn server 最新版本。</p>
